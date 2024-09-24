@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "bache-thesis-python"
+version = "0.1.0"
+description = ""
+authors = ["Iori KOTERA <kotera8300iori@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^2.1.1"
+scipy = "^1.14.1"
+plotly = "^5.24.0"
+folium = "^0.17.0"
+geojson = "^3.1.0"
+nbformat = "^5.10.4"
+pandas = "^2.2.3"
+polars = "<1.1.0"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
