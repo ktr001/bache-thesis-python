@@ -3,7 +3,6 @@ from os import name
 import math
 from time import localtime
 from datetime import datetime,date,time,timedelta
-
 import plotly.graph_objects as go
 import numpy as np
 import polars as pl
@@ -17,8 +16,9 @@ pprint.pprint(f'__name__ = {__name__}')
 pprint.pprint(__name__ == '__main__')
 pprint.pprint(CURRENT_DIR)
 
-PATH_TO_DATA_SOURCE_DIR : str = "/home/iori/daxue/bache_thesis/20240629_down_Futamata_to_Shinjohara/"
-PATH_TO_DATA_SOURCE : str = PATH_TO_DATA_SOURCE_DIR +"gps_omitted_firstzeros_1st1000.csv"
+PATH_TO_DATA_DIR : str = "/home/iori/daxue/bache_thesis/20240629_down_Futamata_to_Shinjohara/"
+PATH_TO_DATA_SOURCE : str = PATH_TO_DATA_DIR +"gps_omitted_firstzeros_1st1000.csv"
+PATH_TO_TARGET_FILE :str = PATH_TO_DATA_DIR + "gps_distance_omitted_firstzeros_1st1000.csv"
 # %%
 
 df_raw  = pl.read_csv(PATH_TO_DATA_SOURCE)
@@ -40,11 +40,27 @@ df_raw = df_raw.with_columns(add_localtime_datetime).with_columns(add_GPStime_da
 # %%
 first_localtime : datetime = df_raw["localtime_datetime"][0]
 first_GPStime : datetime = df_raw["GPStime_datetime"][0]
-add_localtime_timedelta : pl.Expr = ( pl.col("localtime_datetime") - first_localtime).alias("localtime_timedelta")
-add_GPStime_timedelta : pl.Expr = ( pl.col("GPStime_datetime") - first_GPStime).alias("GPStime_timedelta")
+add_localtime_timedelta : pl.Expr = (( pl.col("localtime_datetime") - first_localtime).dt.total_milliseconds()/1000 ).alias("localtime_timedelta")
+add_GPStime_timedelta : pl.Expr = (( pl.col("GPStime_datetime") - first_GPStime).dt.total_milliseconds()/1000 ).alias("GPStime_timedelta")
 # %%
 df_raw = df_raw.with_columns(add_localtime_timedelta).with_columns(add_GPStime_timedelta)
 # %%
-df_speed = np.array(df_raw.get_column("speed"))
-df_time = np.array(df_raw.get_column("localtime_timedelta"))
+speed_array = np.array(df_raw.get_column("speed") /3.6 ) # convert from km/h to m/s
+time_array: np.ndarray = np.array( (df_raw.get_column("localtime_timedelta")))
+# %%
+distance_array : np.ndarray = np.array([0.0 for i in time_array]) #init
+memo:int = 10
+for i in range(len(time_array)):
+    if i==0:
+        distance_array[i] = 0
+    elif i < memo:
+        distance_array[i] = integrate.simpson(y = speed_array[0:i], x = time_array[0:i])
+    else:
+        distance_array[i] = distance_array[i - memo] + integrate.simpson(y = speed_array[i-memo:i], x = time_array[i-memo:i])
+# %%
+distance_series:pl.Series = pl.Series('distance/m',distance_array)
+# %%
+df_with_distance = df_raw.with_columns(distance_series)
+# %%
+df_with_distance.write_csv(PATH_TO_TARGET_FILE)
 # %%
