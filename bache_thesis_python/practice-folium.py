@@ -6,8 +6,8 @@ import geojson as gj
 from pprint import pprint
 import pandas as pd
 
-interested_site_lat = 34.7700834
-interested_site_lng = 138.0114131
+interested_site_lat = 34.8594801
+interested_site_lng = 137.8173302
 # %%
 
 with open('N02-20_RailroadSection.geojson', mode = 'r') as f :
@@ -37,12 +37,19 @@ fmap1 = folium.Map(
 ) 
 folium.GeoJson(rail_lines_tenhama_json).add_to(fmap1)
 # %%
-markers = []
+markers:list[folium.Marker] = []
 for index,row in df_gps.iterrows():
     speed = row["speed"]
     lat = row["latitude"]
     lon = row["longitude"]
-    
+    localTimeStamp = row["localTimeStamp"]
+    GPStimeStamp = row["GPStimeStamp"]
+    popup = f"<div style='width:100px'><b>{localTimeStamp}</b><br>{speed}</div>"
+    marker = folium.Marker([lat,lon],tooltip=speed,popup=popup)
+    markers.append(marker)
+
+for marker in markers:
+    marker.add_to(fmap1)
 
 # %%
 fmap1

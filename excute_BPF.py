@@ -65,6 +65,7 @@ path_to_ang_vel_0629_raw:str = "/home/iori/daxue/bache_thesis/20240629_down_Futa
 #     pprint(f.read())
 # ref  https://note.nkmk.me/python-numpy-loadtxt-genfromtxt-savetxt/
 rawdata_array:npt.NDArray =  np.loadtxt(path_to_ang_vel_0629_raw,delimiter = ',',skiprows=1,usecols=[1,2,3]).T
+timerow:npt.NDArray =  np.loadtxt(path_to_ang_vel_0629_raw,delimiter = ',',skiprows=1,usecols=[0],dtype = object).T
 num_of_data :int = len(rawdata_array[0])
 # chrono_data :npt.NDArray = np.loadtxt(path_to_ang_vel_0629_raw,delimiter = ',',skiprows=1,usecols=0,dtype='str').T
 # pprint(rawdata_array)
@@ -117,8 +118,8 @@ fft_fig.show()
 #%%
 
 path_to_ang_vel_0629_BPF:str = "/home/iori/daxue/bache_thesis/20240629_down_Futamata_to_Shinjohara/ang_vel_0629_BPF.csv"
-filt_data = np.array([chrono_secuence,filt_data_x,filt_data_y,filt_data_z]).T
-np.savetxt(path_to_ang_vel_0629_BPF,filt_data,delimiter=',')
+filt_data = np.array([timerow,filt_data_x,filt_data_y,filt_data_z]).T
+np.savetxt(path_to_ang_vel_0629_BPF,filt_data,delimiter=',',fmt=['%s','%.18e','%.18e','%.18e'])
 
 #%%
 with open(path_to_ang_vel_0629_BPF) as f:
