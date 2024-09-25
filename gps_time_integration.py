@@ -49,7 +49,7 @@ speed_array = np.array(df_raw.get_column("speed") ) # the column 'speed' is alre
 time_array: np.ndarray = np.array( (df_raw.get_column("localtime_timedelta")))
 # %%
 distance_array : np.ndarray = np.array([0.0 for i in time_array]) #init
-memo:int = 100
+memo:int = 10000
 for i in range(len(time_array)):
     if i==0:
         distance_array[i] = 0
