@@ -54,9 +54,9 @@ for i in range(len(time_array)):
     if i==0:
         distance_array[i] = 0
     elif i < memo:
-        distance_array[i] = integrate.simpson(y = speed_array[0:i], x = time_array[0:i])
+        distance_array[i] = integrate.simpson(y = speed_array[0:i+1], x = time_array[0:i+1])
     else:
-        distance_array[i] = distance_array[i - memo] + integrate.simpson(y = speed_array[i-memo:i], x = time_array[i-memo:i])
+        distance_array[i] = distance_array[i-memo] + integrate.simpson(y = speed_array[i-memo:i+1], x = time_array[i-memo:i+1])
 # %%
 local_time_array:np.ndarray = np.array(df_raw["localtime_datetime"].dt.to_string("%H:%M:%S%.f"))
 
