@@ -1,3 +1,4 @@
+'''時刻歴振動データにBandpass filterを適用'''
 # %%
 
 from pathlib import Path
@@ -11,10 +12,7 @@ import numpy.typing as npt
 from bache_thesis_python import *
 from pprint import pprint
 import plotly.graph_objects as go
-import pandas as pd
 
-from scipy.fftpack import fft
-from scipy.fftpack import fftshift
 # %%
 
 # ####### practice filter ######

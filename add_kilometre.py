@@ -1,3 +1,5 @@
+'''BPF後の振動データを時間積分後のgpsデータと照らし合わせて、振動データにキロ程を付けたい'''
+
 # %% 
 from os import name
 import datetime
@@ -14,6 +16,8 @@ pprint.pprint(f'__name__ == "__main__" = {__name__ == "__main__"}')
 pprint.pprint(CURRENT_DIR)
 
 #%%
+
+# [ ] 積分エラー？ gps data の積分で求めた距離(41K150.291M)とドクター東海のデータでの距離(データのラストが68K013.054M,天竜二俣が26K250M => 41K763.054M)が違う
 
 PATH_TO_DATA_DIR : str = "/home/iori/daxue/bache_thesis/20240629_down_Futamata_to_Shinjohara/"
 SOURCE_FILE :str = PATH_TO_DATA_DIR + "ang_vel_0629_BPF_omitted_firstzeros.csv"
