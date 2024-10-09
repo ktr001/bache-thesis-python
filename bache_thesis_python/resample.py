@@ -3,8 +3,9 @@ import numpy as np
 
 def butterlowpass(x, fpass, fstop, gpass, gstop, fs, dt, graphCheckflag=False, labelname='Signal[-]'):
     from scipy import signal
-    import matplotlib.pyplot as plt
-    # [ ] matplotlib を plotlyに
+    # import matplotlib.pyplot as plt
+    from plotly import graph_objects as go
+    # [x] matplotlib を plotlyに
     import numpy as np
 
     '''
@@ -34,16 +35,44 @@ def butterlowpass(x, fpass, fstop, gpass, gstop, fs, dt, graphCheckflag=False, l
     
     if graphCheckflag == True:
         time = np.arange(x.__len__()) * dt
-        plt.figure(figsize = (12, 5))
-        plt.title('Comparison between signals')
-        plt.plot(time, x, color='black', label='Raw signal')
-        plt.plot(time, y, color='red', label='Filtered signal')
-        plt.xlabel('Time[s]')
-        plt.ylabel(labelname)
-        plt.show()
+        
+        fig_data = [
+            go.Scatter(x = time, y = x, name = 'Raw signal'),
+            go.Scatter(x = time, y = y, name = 'Filtered signal')
+            ]
+        fig = go.Figure(data = fig_data).update_layout(
+            xaxis = dict(title = 'Time(s) or length(m)'),
+            yaxis = dict(title = f'{labelname}'),
+            # title ='wavelength analysis of TRV data 0630 for 1st 1000rows ',
+            title ='Comparison between signals',
+            legend=dict(
+                xanchor='left',
+                yanchor='bottom',
+                x=0.02,
+                y=0.9,
+                orientation='h',
+                ),
+        )
+        fig.show()
     return y
 
 def resample(df, Timelabel, analysis_label, f_base, f_trans, mode='UP', fill_value='extrapolate', kind='linear', fpass=None, fstop=None, gpass=None, gstop=None):
+    '''
+    
+    df: 周波数変換したいデータフレームです。実際には、csvファイルなどを読み込んだデータになると思います。
+    Timelabel: 入力したデータフレームにおける時系列のラベル名です。
+    analysis_label: 周波数変換したいラベルをリストにして渡します。
+    f_base: 入力したデータフレームのサンプリング周波数です。変換前の周波数とも言えます。
+    f_trans: 変換後のサンプリング周波数です。
+    mode: アップサンプリングかダウンサンプリングを指定します。(UP / DOWN)
+    fill_value: 外挿オプションです。データの範囲外となる値を補完する場合、例えば0で埋めたり、一個前のサンプリング値で埋めることが出来ます。scipyに準拠しています。
+    kind: 補間関数の設定です。scipyに準拠しています。
+    fpass: ローパスフィルタの通過域端周波数です。
+    fstop: 阻止域端周波数です
+    gpass: 通過域最大損失量です
+    gstop: 阻止域最大損失量です
+
+    '''
     from scipy import interpolate
     import pandas as pd # [ ] pandas を polarsに
     samplerate:float = 1/f_base

@@ -63,8 +63,8 @@ def calc_amp(data:npt.NDArray, fs:float) -> dict[str,dict[str,npt.NDArray]]:
             'freq_full':freq,
         },
         'result_half':{
-            'amp':Amp[1:num_of_freq_half+1],
-            'freq':freq[1:num_of_freq_half+1],
+            'amp':Amp[0:num_of_freq_half],
+            'freq':freq[0:num_of_freq_half],
         },
     }
 # %%
