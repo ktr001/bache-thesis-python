@@ -2,28 +2,28 @@
 import numpy as np
 
 def butterlowpass(x, fpass, fstop, gpass, gstop, fs, dt, graphCheckflag=False, labelname='Signal[-]'):
+    '''
+    x: 入力データ
+    fpass: 通過域端周波数[Hz]
+    fstop: 阻止域端周波数[Hz]
+    gpass: 通過域最大損失量[dB]
+    gstop: 阻止域最大損失量[dB]
+    fs: サンプリング周波数[Hz]
+    dt: サンプリング間隔[s]
+    checkflag: グラフ生成ON/OFF
+    labelname: 信号ラベル名
+    
+    :return:　フィルター後データ
+    バターワースを用いたローパスフィルタ
+    filtfilt関数により位相ずれを防ぐ
+    (順方向と逆方向からフィルタをかけて位相遅れを相殺)
+    '''
     from scipy import signal
     # import matplotlib.pyplot as plt
     from plotly import graph_objects as go
     # [x] matplotlib を plotlyに
     import numpy as np
-
-    '''
-    バターワースを用いたローパスフィルタ
-    filtfilt関数により位相ずれを防ぐ
-    (順方向と逆方向からフィルタをかけて位相遅れを相殺)
-    :param x: 入力データ
-    :param fpass: 通過域端周波数[Hz]
-    :param fstop: 阻止域端周波数[Hz]
-    :param gpass: 通過域最大損失量[dB]
-    :param gstop: 阻止域最大損失量[dB]
-    :param fs: サンプリング周波数[Hz]
-    :param dt: サンプリング間隔[s]
-    :param checkflag: グラフ生成ON/OFF
-    :param labelname: 信号ラベル名
-    :return:　フィルター後データ
-    '''
-
+    
     print('Applying filter against: {0}...'.format(labelname))
     fn = 1 / (2 * dt)
     Wp = fpass / fn
@@ -58,7 +58,6 @@ def butterlowpass(x, fpass, fstop, gpass, gstop, fs, dt, graphCheckflag=False, l
 
 def resample(df, Timelabel, analysis_label, f_base, f_trans, mode='UP', fill_value='extrapolate', kind='linear', fpass=None, fstop=None, gpass=None, gstop=None):
     '''
-    
     df: 周波数変換したいデータフレームです。実際には、csvファイルなどを読み込んだデータになると思います。
     Timelabel: 入力したデータフレームにおける時系列のラベル名です。
     analysis_label: 周波数変換したいラベルをリストにして渡します。
@@ -75,6 +74,7 @@ def resample(df, Timelabel, analysis_label, f_base, f_trans, mode='UP', fill_val
     '''
     from scipy import interpolate
     import pandas as pd # [ ] pandas を polarsに
+    import polars as pl
     samplerate:float = 1/f_base
     filt_df, resampled_df = pd.DataFrame(),pd.DataFrame()
     trans_nums = int((df[Timelabel].max() / (1 / f_base)) * (f_trans / f_base)) + 1
