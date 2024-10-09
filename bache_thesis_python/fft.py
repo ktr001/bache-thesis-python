@@ -44,9 +44,10 @@ fc:float = 100 # 決め打ち
 #     return Shifted_f,Shifted_X
 # %%
 # 高速フーリエ変換
-def calc_amp(data:npt.NDArray, fs:float):
+def calc_amp(data:npt.NDArray, fs:float) -> dict[str,dict[str,npt.NDArray]]:
     '''フーリエ変換して振幅スペクトルを計算する関数
-    freq[:N//2], Amp[:N//2] とする必要がある。
+    fullの周波数/振幅と、周波数の後半の成分を返す。
+    そこそこ正確に結果が返ってくるっぽい？
     '''
     N = len(data)
     window = scipy.signal.get_window('hann', Nx = N)
@@ -55,7 +56,15 @@ def calc_amp(data:npt.NDArray, fs:float):
     F = F / (N / 2) # フーリエ変換の結果を正規化
     F = F * (N / sum(window)) # 窓関数による振幅減少を補正する
     Amp = np.abs(F) # 振幅スペクトル
+    num_of_freq_half:int = len(freq) // 2
     return {
-        'Amp':Amp,
-        'freq':freq,
+        'result_full':{
+            'amp_full':Amp,
+            'freq_full':freq,
+        },
+        'result_half':{
+            'amp':Amp[1:num_of_freq_half+1],
+            'freq':freq[1:num_of_freq_half+1],
+        },
     }
+# %%

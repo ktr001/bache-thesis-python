@@ -114,12 +114,12 @@ fft_fig.show()
 
 ##### FFT end
 #%%
+if __name__ == '__main__':
+    path_to_ang_vel_0629_BPF:str = "/home/iori/daxue/bache_thesis/20240629_down_Futamata_to_Shinjohara/ang_vel_0629_BPF.csv"
+    filt_data = np.array([timerow,filt_data_x,filt_data_y,filt_data_z]).T
+    np.savetxt(path_to_ang_vel_0629_BPF,filt_data,delimiter=',',fmt=['%s','%.18e','%.18e','%.18e'])
 
-path_to_ang_vel_0629_BPF:str = "/home/iori/daxue/bache_thesis/20240629_down_Futamata_to_Shinjohara/ang_vel_0629_BPF.csv"
-filt_data = np.array([timerow,filt_data_x,filt_data_y,filt_data_z]).T
-np.savetxt(path_to_ang_vel_0629_BPF,filt_data,delimiter=',',fmt=['%s','%.18e','%.18e','%.18e'])
-
-#%%
-with open(path_to_ang_vel_0629_BPF) as f:
-    pprint(f.read())
-#%%
+    #%%
+    with open(path_to_ang_vel_0629_BPF) as f:
+        pprint(f.read())
+    #%%
