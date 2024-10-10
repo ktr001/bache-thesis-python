@@ -12,7 +12,7 @@ from pathlib import Path
 import pprint
 CURRENT_DIR = Path.cwd()
 pprint.pprint(f'__name__ = {__name__}')
-pprint.pprint(CURRENT_DIR)
+pprint.pprint(f'CURRENT_DIR={CURRENT_DIR},\tFILENAME={__file__}')
 
 
 # %%
