@@ -152,7 +152,7 @@ def resample(df:pl.DataFrame, Timelabel, analysis_label, f_base, f_trans, mode='
             filt_df = filt_df.with_columns(
                 pl.Series(
                     butterlowpass(
-                        x=resampled_df[labelname], fpass=fpass,
+                        x=df[labelname], fpass=fpass,
                         fstop=fstop,
                         gpass=gpass,
                         gstop=gstop,
@@ -175,7 +175,7 @@ def resample(df:pl.DataFrame, Timelabel, analysis_label, f_base, f_trans, mode='
         resampled_df = resampled_df.with_columns(
             pl.Series(
                 np.linspace(0, filt_df[Timelabel].max(), trans_nums)
-            )
+            ).alias(Timelabel)
         )
         # resampled_df[Timelabel] = np.linspace(0, filt_df[Timelabel].max(), trans_nums)
 
@@ -185,7 +185,7 @@ def resample(df:pl.DataFrame, Timelabel, analysis_label, f_base, f_trans, mode='
             resampled_df = resampled_df.with_columns(
                 pl.Series(
                     function(resampled_df[Timelabel])
-                )
+                ).alias(label)
             )
             # resampled_df[label] = function(resampled_df[Timelabel])
 
