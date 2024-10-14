@@ -23,38 +23,7 @@ SOURCE_0630_FILE :str = PATH_TO_0630_DATA_DIR + "TGdata20230630_converted.csv"
 # SOURCE_0126_FILE :str = PATH_TO_0126_DATA_DIR + "TGdata20240126_converted.csv"
 
 # SOURCE_0630_FILE :str= PATH_TO_0630_DATA_DIR + "TGdata_freqtestdata_1st1000.csv"
-#%%
-###### FFT (debug)
-# def graph_fft(raw_data):
-#     num_of_data = len(raw_data)
-#     SAMPLE_FREQ = 1/(0.25) #空間周波数[1/m]
-#     F = np.fft.fft(raw_data)
-#     Amp = np.abs( F / (num_of_data / 2) )
 
-#     freq = np.fft.fftfreq(num_of_data, d= 1/SAMPLE_FREQ)
-#     n_freq_half : int = len(freq) // 2
-#     fft_figdata:list[go.Scatter] = [
-#         go.Scatter(x = freq[0:n_freq_half], y = Amp[0:n_freq_half]),
-#     ]
-#     fft_fig:go.Figure = go.Figure(data = fft_figdata)
-#     fft_fig.show()
-
-# def dft(w,t,G):
-#     def expi(x):
-#         return np.exp(complex(0.,x))
-#     res = 0.+0.j
-#     for i in range(len(t)-1):
-#         tx,ty = t[i],t[i+1]
-#         Gx,Gy = G[i],G[i+1]
-#         dt = ty-tx
-#         exwdt = expi(-w*dt)
-#         d = (complex(1.0,-w*dt) - exwdt )/(w**2*dt)
-#         dc= d.conjugate()                
-#         res += (Gx*d + Gy*dc * exwdt) * expi(-w*tx)
-#     return w, res.real, res.imag
-
-
-##### FFT end
 # %%
 # t = np.array([0.001*(2**i) for i in range(100)])
 # t = np.array([0.1*(i) for i in range(1000)])
@@ -65,15 +34,9 @@ SOURCE_0630_FILE :str = PATH_TO_0630_DATA_DIR + "TGdata20230630_converted.csv"
 # result_data:dict[str,npt.NDArray] = fft.calc_amp(wave,10)['result_half']
 # df_fft_result : pl.DataFrame = pl.DataFrame(result_data).with_columns( (pl.col('freq')**(-1)).alias('wave_length') )
 #%%
-# go.Figure(
-#     data = [
-#         go.Scatter(x = df_fft_result['wave_length'], y = df_fft_result['amp'])
-#     ]
-# ).show()
-#%%
 F_BASE:float = 1/(0.25) # 元データのfreq = 4(cycle/m)
 F_TRANS:float = 8*F_BASE # UP sampling後の周波数 
-F_FOR_FFT:float = F_BASE # UP sampling後の周波数 
+F_FOR_FFT:float = F_BASE # FFT用の周波数 
 #%%
 df_source_data = pl.read_csv(SOURCE_0630_FILE).with_columns(pl.col('キロ程(meter)') - 114.5 ) # source data 読み込み,キロ程が114.5Mから始まるので0Mにオフセット
 df_resampled_data_tmp : pl.DataFrame = resample(
@@ -88,7 +51,6 @@ df_resampled_data_tmp : pl.DataFrame = resample(
 df_resampled_data = resample(
     df_resampled_data_tmp,
     'キロ程(meter)',
-    
     ['平面性(生波形)','水準(生波形)','10m弦高低(右)(狂い量)','10m弦高低(左)(狂い量)','10m弦通り(右)(生波形)','10m弦通り(左)(生波形)','軌間(生波形)'],
     F_TRANS,
     F_BASE,
@@ -96,9 +58,8 @@ df_resampled_data = resample(
 )
 #%% 
 #  [ ] 等間隔サンプリングからのズレの確認
-
-
-
+#%%
+pl.write_csv()
 #%%
 
 df_twist_fft_result:pl.DataFrame =pl.DataFrame(
@@ -237,10 +198,10 @@ fig_wavelength_analysis.show()
 fig_freq_analysis.show()
 # %%
 if __name__ == '__main__':
-
+    pass
     # offline.plot(figure_or_data = fig_wavelength_analysis, filename = PATH_TO_0630_DATA_DIR+'fig_wavelength_analysis_for1st1000data.html')
     # offline.plot(figure_or_data = fig_freq_analysis, filename = PATH_TO_0630_DATA_DIR+'fig_freq_analysis_for1st1000data.html' )
 
-    offline.plot(figure_or_data = fig_wavelength_analysis, filename = PATH_TO_0630_DATA_DIR+'fig_wavelength_analysis.html')
-    offline.plot(figure_or_data = fig_freq_analysis, filename = PATH_TO_0630_DATA_DIR+'fig_freq_analysis.html' )
-# %%
+    # offline.plot(figure_or_data = fig_wavelength_analysis, filename = PATH_TO_0630_DATA_DIR+'fig_wavelength_analysis.html')
+    # offline.plot(figure_or_data = fig_freq_analysis, filename = PATH_TO_0630_DATA_DIR+'fig_freq_analysis.html' )
+    # %%
