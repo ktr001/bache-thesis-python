@@ -1,3 +1,5 @@
+'''GPSの速度データを積分してv-t,x-tグラフを出力したい'''
+
 # %% 
 from os import name
 import plotly.graph_objects as go

@@ -1,4 +1,11 @@
+'''
+non-uniform(不等間隔)なサンプリングデータ(e.g.ドクター東海のデータ)を等間隔データに直すため,サンプリング周波数をUP sampling → DOWN sampling したい
+resamplingのための関数.
+
 ## reference : https://qiita.com/Qooniee/items/7dde8602ca41a1fd5790
+
+'''
+
 
 from pathlib import Path
 import pprint

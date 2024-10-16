@@ -1,3 +1,6 @@
+'''
+pythonによりリサンプリングした上でfft.
+'''
 #%%
 from os import name
 import datetime

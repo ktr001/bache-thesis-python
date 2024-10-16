@@ -1,3 +1,8 @@
+'''
+TRVデータのリサンプリングを行い,指定ファイルに書き出す.
+freq:元データが25cm間隔.
+'''
+
 #%%
 from os import name
 import datetime
@@ -25,10 +30,22 @@ SOURCE_0630_FILE :str = PATH_TO_0630_DATA_DIR + "TGdata20230630_converted.csv"
 OUTPUT_0630_FILE:str = PATH_TO_0630_DATA_DIR + "TGdata20230630_resampled.csv"
 #%%
 F_BASE:float = 1/(0.25) # 元データのfreq = 4(cycle/m)
-F_TRANS:float = 8*F_BASE # UP sampling後の周波数 
+F_TRANS:float = 16*F_BASE # UP sampling後の周波数 
 F_FOR_FFT:float = F_BASE # FFT用の周波数 
 #%%
 df_source_data = pl.read_csv(SOURCE_0630_FILE).with_columns(pl.col('キロ程(meter)') - 114.5 ) # source data 読み込み,キロ程が114.5Mから始まるので0Mにオフセット
+df_compare_source = pl.DataFrame(
+    [
+        pl.Series(
+            np.array(
+            [i*0.25 for i in range(df_source_data.height)]
+            )
+        ).alias('uniform_キロ程'),
+        df_source_data['キロ程(meter)'].alias('source_キロ程'),
+     ]
+).with_columns(
+    ( pl.col('source_キロ程') - pl.col('uniform_キロ程') ).alias('diff')
+)
 df_resampled_data_tmp : pl.DataFrame = resample(
     df_source_data,
     'キロ程(meter)',
@@ -62,9 +79,10 @@ df_compare = pl.DataFrame(
 )
 #%%
 df_compare = df_compare.with_columns(
-    (pl.col('uniform_キロ程') - pl.col('resampled_キロ程')).alias('diff')
+    ( - pl.col('uniform_キロ程') + pl.col('resampled_キロ程')).alias('diff')
 )
 df_compare.describe()
 #%%
-df_resampled_data.write_csv(OUTPUT_0630_FILE)
+if __name__ == "__main__":
+    df_resampled_data.write_csv(OUTPUT_0630_FILE)
 #%%
