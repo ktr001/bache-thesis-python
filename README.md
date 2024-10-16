@@ -54,3 +54,7 @@
 
 7 directories, 42 files
 </pre>
+
+## improve python import
+https://qiita.com/progrommer/items/abd2276f314792c359da
+https://zenn.dev/giba/articles/7ed4c5a8f07728
